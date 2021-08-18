@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<h1 class="display-1">Home</h1>
+{% if current_user.is_authenticated %}
+<h4>Hi {{current_user.username}}</h4>
+<p>Welcome to CRUD.com, everyday we are trying to add more CRUD operations to the website and make it more lively as a whole</p>
+{% endif %}
+{% endblock %}
