@@ -1,19 +1,24 @@
 from ..models import TodoItems, db
-from flask import flash, request, redirect
+from flask import flash, request, redirect, Response
 
 
 def todo_delete():
-    print(request.data)
-    flash("delete API is working")
-    return redirect('/')
+    id = request.form.get('id')
+    item = TodoItems.query.filter_by(id=id).first()
+    db.session.delete(item)
+    db.session.commit()
+    flash(f"{item.name} is deleted")    
+    return Response(status=204)
 
 def todo_put():
-    print(request.data)
-    flash("put API is working")
-    return redirect('/')
+    id = request.form.get('id')
+    item = TodoItems.query.filter_by(id=id).first()
+    item.is_complete = True
+    db.session.commit()
+    flash(f"{item.name} is completed")
+    return Response(status=204)
 
 def todo_post():
-    print(request.__dict__)
     name = request.form.get('name')
     details = request.form.get("details", "")
     is_complete = request.form.get("is_complete", False)
