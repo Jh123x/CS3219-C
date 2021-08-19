@@ -1,7 +1,8 @@
 # from app import app
 from . import db
-from .models import User
+from .models import User, TodoItems
 from .forms import LoginForm, RegisterForm
+from .todo import todo_put, todo_post, todo_delete
 
 import sqlalchemy
 from hashlib import sha512
@@ -15,7 +16,25 @@ app = Blueprint("main_page", __name__, template_folder="templates")
 
 @app.route('/', methods=["GET"])
 def index():
-    return render_template('index.html')
+    items = TodoItems.query.all()
+    return render_template('index.html', items=items)
+
+
+@app.route('/todo', methods=['POST', 'PUT', 'DELETE'])
+def todo():
+    """Render a todo list"""
+    func_dict = {
+        'POST': todo_post,
+        'PUT': todo_put,
+        'DELETE': todo_delete,
+    }
+
+    method = func_dict.get(request.method, None)
+    if method is None:
+        flash("Method not allowed")
+        return redirect('/')
+
+    return method()
 
 
 @login_required
