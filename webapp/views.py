@@ -36,7 +36,6 @@ def todo():
         return redirect('/')
 
     res = method()
-    sleep(0.1)
     return res
 
 

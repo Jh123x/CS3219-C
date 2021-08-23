@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from .models import db, User
 from flask_login import LoginManager
@@ -31,3 +32,5 @@ def create_app():
 
 app = create_app()
 app.register_blueprint(main_blueprint)
+if not os.path.isfile("database.db"):
+    db.create_all(app=app)
