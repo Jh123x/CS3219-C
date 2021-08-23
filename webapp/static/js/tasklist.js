@@ -5,8 +5,8 @@ function req(method, id, csrf_token) {
             url: "/todo",
             data: "id=" + id + "&csrf_token=" + csrf_token,
             success: function (msg) {
-                document.location.reload()
-            }
+                location.reload();
+            },
         }
     );
 }

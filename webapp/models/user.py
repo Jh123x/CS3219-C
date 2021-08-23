@@ -13,5 +13,3 @@ class User(db.Model, flask_login.UserMixin):
     def __repr__(self):
         return f'<User {self.username}>'
 
-    def get_id(self):
-        return self.id

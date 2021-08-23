@@ -5,6 +5,7 @@ from .forms import LoginForm, RegisterForm
 from .todo import todo_put, todo_post, todo_delete
 
 import sqlalchemy
+from time import sleep
 from hashlib import sha512
 from flask_login.utils import logout_user
 from flask_login import login_required, login_user, current_user
@@ -34,7 +35,9 @@ def todo():
         flash("Method not allowed")
         return redirect('/')
 
-    return method()
+    res = method()
+    sleep(0.1)
+    return res
 
 
 @login_required

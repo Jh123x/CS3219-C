@@ -5,18 +5,22 @@ from flask import flash, request, redirect, Response
 def todo_delete():
     id = request.form.get('id')
     item = TodoItems.query.filter_by(id=id).first()
+    
     db.session.delete(item)
     db.session.commit()
-    flash(f"{item.name} is deleted")    
-    return Response(status=204)
+
+    flash(f"{item.name} is deleted")
+    return redirect('/')
 
 def todo_put():
     id = request.form.get('id')
     item = TodoItems.query.filter_by(id=id).first()
+
     item.is_complete = True
     db.session.commit()
+
     flash(f"{item.name} is completed")
-    return Response(status=204)
+    return redirect('/')
 
 def todo_post():
     name = request.form.get('name')
