@@ -36,6 +36,9 @@ const posts = [
 app.get("/posts", authenticateToken, (req, res) => {
     const username = req.user.name
     const user = users[username]
+    if (user == null) {
+        return res.sendStatus(404)
+    }
 
     if (user.permission_level == 1) {
         return res.json(posts)
@@ -45,12 +48,30 @@ app.get("/posts", authenticateToken, (req, res) => {
 
 app.post("/posts", authenticateToken, (req, res) => {
     const username = req.user.name
+    const user = users[username]
+    if (user == null) {
+        return res.sendStatus(404)
+    }
+
     const title = req.body.title
     posts.push({
         username: username,
         title: title
     })
     return res.sendStatus(201)
+})
+
+app.get("/admin", authenticateToken, (req, res) => {
+    const username = req.user.name
+    const user = users[username]
+    if (user == null) {
+        return res.sendStatus(404)
+    }
+
+    if (user.permission_level == 1) {
+        return res.json({ permission_level: "admin" })
+    }
+    return res.sendStatus(403)
 })
 
 
@@ -78,11 +99,11 @@ app.post("/login", (req, res) => {
         return res.sendStatus(400)
     }
 
-    if(users[username] == null){
+    if (users[username] == null) {
         return res.sendStatus(404)
     }
 
-    if(users[username].password != password){
+    if (users[username].password != password) {
         return res.sendStatus(401)
     }
 
