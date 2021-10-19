@@ -34,17 +34,23 @@ const posts = [
 
 
 app.get("/posts", authenticateToken, (req, res) => {
-    var username = req.user.name
+    const username = req.user.name
     const user = users[username]
-
-    if (user == null) {
-        return res.sendStatus(401)
-    }
 
     if (user.permission_level == 1) {
         return res.json(posts)
     }
     return res.json(posts.filter(post => post.username === username))
+})
+
+app.post("/posts", authenticateToken, (req, res) => {
+    const username = req.user.name
+    const title = req.body.title
+    posts.push({
+        username: username,
+        title: title
+    })
+    return res.sendStatus(201)
 })
 
 
@@ -105,7 +111,6 @@ function authenticateToken(req, res, next) {
             return res.sendStatus(403)
         }
         req.user = user
-        console.log(user)
         next()
     })
 }
