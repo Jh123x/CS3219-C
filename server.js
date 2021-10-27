@@ -32,18 +32,29 @@ const posts = [
     }
 ]
 
+// Function based on permissions
+const getPosts = {
+    0: (res, posts, username) => res.json(posts.filter(post=>post.username == username)),
+    1: (res, posts, _) => res.json(posts),
+}
+
+const admin = {
+    1: (res) => res.json({'permission_level': 'admin'}),
+}
+
+
 
 app.get("/posts", authenticateToken, (req, res) => {
     const username = req.user.name
     const user = users[username]
+    const permission = user.permission_level
     if (user == null) {
         return res.sendStatus(404)
     }
-
-    if (user.permission_level == 1) {
-        return res.json(posts)
+    if(permission in getPosts){
+        return getPosts[permission](res, posts, username)
     }
-    return res.json(posts.filter(post => post.username === username))
+    return res.sendStatus(403)
 })
 
 app.post("/posts", authenticateToken, (req, res) => {
@@ -64,12 +75,13 @@ app.post("/posts", authenticateToken, (req, res) => {
 app.get("/admin", authenticateToken, (req, res) => {
     const username = req.user.name
     const user = users[username]
+    const permission = user.permission_level
     if (user == null) {
         return res.sendStatus(404)
     }
 
-    if (user.permission_level == 1) {
-        return res.json({ permission_level: "admin" })
+    if(permission in admin){
+        return admin[permission](res)
     }
     return res.sendStatus(403)
 })
@@ -129,7 +141,7 @@ function authenticateToken(req, res, next) {
     // JWT verify
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
-            return res.sendStatus(403)
+            return res.sendStatus(401)
         }
         req.user = user
         next()
