@@ -1,12 +1,6 @@
 # CS3219-C
 CS3219 Task C
 
-# Student Name
-Wen Junhua
-
-# Matriculation number
-A0196683L
-
 # Link to Github
 https://github.com/Jh123x/CS3219-C
 
